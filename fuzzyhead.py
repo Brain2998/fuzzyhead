@@ -28,8 +28,7 @@ def root():
 
         task_id=task_name+'_'+str(datetime.datetime.now().time())
         #directory to save dictionary to
-        dict_dir=os.path.join(os.path.dirname(os.path.realpath('__file__')), 
-        'divided_dict', task_id)
+        dict_dir=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'divided_dict', task_id)
         os.makedirs(dict_dir, exist_ok=True)
         #dictionary file inside created directory
         dict_path=os.path.join(dict_dir, dict_name)
@@ -40,7 +39,7 @@ def root():
         conn.commit()
         
         fuzzing_dict.save(dict_path)
-        dict.divide_dict(dict_path, divide_number, task_id, dict_name)
+        dict.divide_dict(dict_path, divide_number, task_id, dict_name[:dict_name.index('.txt')])
 
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
@@ -57,7 +56,12 @@ def send_fonts(path):
 @app.route('/getDictById')
 def returnDictById():
     args=flask.request.args
-    return add_cors(flask.send_from_directory('fonts', path))
+    task_id=args['taskId']
+    dict_id=args['dictId']
+    cursor.execute('SELECT dict_name FROM dicts WHERE task_id=? AND dict_id=?', (task_id, dict_id))
+    dict_name=cursor.fetchall()[0][0]
+    dir=os.path.join('divided_dict', task_id)
+    return add_cors(flask.send_from_directory(os.path.join('divided_dict', task_id), dict_name))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
