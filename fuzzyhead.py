@@ -44,9 +44,9 @@ def root():
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 
-@app.route('/add_files/<path:path>')
-def send_static(path):
-    return add_cors(flask.send_from_directory('add_files', path))
+@app.route('/css/<path:path>')
+def send_css(path):
+    return add_cors(flask.send_from_directory('css', path))
 
 @app.route('/fonts/<path:path>')
 def send_fonts(path):
