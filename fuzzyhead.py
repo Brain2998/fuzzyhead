@@ -48,10 +48,9 @@ def root():
 def send_css(path):
     return add_cors(flask.send_from_directory('css', path))
 
-@app.route('/fonts/<path:path>')
-def send_fonts(path):
-    return add_cors(flask.send_from_directory('fonts', path))
-
+@app.route('/js/<path:path>')
+def send_js(path):
+    return add_cors(flask.send_from_directory('js', path))
 
 @app.route('/getDictById')
 def returnDictById():

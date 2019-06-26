@@ -1,0 +1,1 @@
+var $spinner = $('#searchButton').hide();
