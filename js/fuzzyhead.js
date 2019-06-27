@@ -3,20 +3,19 @@ $(document).ready(function() {
 	spinner.hide();
 	$('form').submit(function(e) {
 		spinner.show();
-	});
+		$.ajax({
+	        type: "POST",
+	        url: "/", 
+	        data: new FormData($('form')[0]), 
+	        cache: false,
+		    contentType: false,
+		    processData: false,
+	        success: function(data)
+	        {
+	          $("#result").html(data);
+	          spinner.hide();
+	        }
+        });
+        e.preventDefault();
+	}); 
 });
-/*$(function() {
-  $('form').submit(function(e) {
-    e.preventDefault();
-    spinner.show();
-    $.ajax({
-      url: 't2228.php',
-      data: $(this).serialize(),
-      method: 'post',
-      dataType: 'JSON'
-    }).done(function(resp) {
-      spinner.hide();
-      alert(resp.status);
-    });
-  });
-});*/

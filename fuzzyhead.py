@@ -37,10 +37,9 @@ def root():
         (task_id, task_name, dict_name, flask.request.form['fuzzer'], 
         flask.request.form['target_ip'], divide_number, flask.request.form['cli_args']))
         conn.commit()
-        
         fuzzing_dict.save(dict_path)
         dict.divide_dict(dict_path, divide_number, task_id, dict_name[:dict_name.index('.txt')])
-
+        return "Result"
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 
