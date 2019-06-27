@@ -103,6 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-divided_dict/
+dict/
 
-task.db
+.task.db
