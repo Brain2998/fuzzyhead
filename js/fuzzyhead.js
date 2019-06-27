@@ -1,5 +1,5 @@
-var spinner = $('#spinner');
 $(document).ready(function() {
+	var spinner = $('#spinner');
 	spinner.hide();
 	$('form').submit(function(e) {
 		spinner.show();

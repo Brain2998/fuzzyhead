@@ -1,5 +1,5 @@
 import flask
-import dict
+from fuzzyhead import script
 import os
 import datetime
 import sqlite3
@@ -10,8 +10,6 @@ cursor = conn.cursor()
 cursor.execute("""CREATE TABLE IF NOT EXISTS tasks (id text PRIMARY KEY, name text NOT NULL, 
     dict_path text NOT NULL, fuzzer text NOT NULL, target_ip text NOT NULL, divide_number integer, 
     cli_args text);""")
-cursor.execute("""CREATE TABLE IF NOT EXISTS dicts (task_id text, dict_id text, dict_name text NOT NULL,
-    PRIMARY KEY(task_id, dict_id));""")
 conn.commit()
 
 def add_cors(response):
@@ -28,7 +26,7 @@ def root():
 
         task_id=task_name+'_'+str(datetime.datetime.now().time())
         #directory to save dictionary to
-        dict_dir=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'divided_dict', task_id)
+        dict_dir=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'dict', task_id)
         os.makedirs(dict_dir, exist_ok=True)
         #dictionary file inside created directory
         dict_path=os.path.join(dict_dir, dict_name)
@@ -38,8 +36,7 @@ def root():
         flask.request.form['target_ip'], divide_number, flask.request.form['cli_args']))
         conn.commit()
         fuzzing_dict.save(dict_path)
-        dict.divide_dict(dict_path, divide_number, task_id, dict_name[:dict_name.index('.txt')])
-        return "Result"
+        return script.start_fuzzing(dict_path, divide_number)
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 
@@ -54,16 +51,6 @@ def send_js(path):
 @app.route('/fonts/<path:path>')
 def send_fonts(path):
     return add_cors(flask.send_from_directory('fonts', path))
-
-@app.route('/getDictById')
-def returnDictById():
-    args=flask.request.args
-    task_id=args['taskId']
-    dict_id=args['dictId']
-    cursor.execute('SELECT dict_name FROM dicts WHERE task_id=? AND dict_id=?', (task_id, dict_id))
-    dict_name=cursor.fetchall()[0][0]
-    dir=os.path.join('divided_dict', task_id)
-    return add_cors(flask.send_from_directory(os.path.join('divided_dict', task_id), dict_name))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
