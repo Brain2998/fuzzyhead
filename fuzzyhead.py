@@ -23,20 +23,17 @@ def root():
         dict_name=fuzzing_dict.filename
         task_name=flask.request.form['name']
         divide_number=int(flask.request.form['divide_number'])
+        target_ip=flask.request.form['target_ip']
 
         task_id=task_name+'_'+str(datetime.datetime.now().time())
-        #directory to save dictionary to
-        dict_dir=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'dict', task_id)
-        os.makedirs(dict_dir, exist_ok=True)
-        #dictionary file inside created directory
-        dict_path=os.path.join(dict_dir, dict_name)
+        dict_path=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'dict', dict_name)
         
         cursor.execute('INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?)', 
         (task_id, task_name, dict_name, flask.request.form['fuzzer'], 
-        flask.request.form['target_ip'], divide_number, flask.request.form['cli_args']))
+        target_ip, divide_number, flask.request.form['cli_args']))
         conn.commit()
         fuzzing_dict.save(dict_path)
-        return script.start_fuzzing(dict_path, divide_number)
+        return script.start_fuzzing(dict_path, divide_number, target_ip)
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 
