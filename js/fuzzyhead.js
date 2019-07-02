@@ -1,7 +1,8 @@
+var spinner = $('#spinner');
 $(document).ready(function() {
-	var spinner = $('#spinner');
 	spinner.hide();
 	$('form').submit(function(e) {
+		$("#result").empty();
 		spinner.show();
 		$.ajax({
 	        type: "POST",
@@ -12,14 +13,17 @@ $(document).ready(function() {
 		    processData: false,
 	        success: function(data)
 	        {
-	          $("#result").html(data);
-	          spinner.hide();
+	        	result(data)
 	        },
 	        error: function(err){
-	        	console.log(`ajax err: ${JSON.stringify(err,null,2)}`)
-	        	spinner.hide();
+	        	result(`ajax err: ${JSON.stringify(err,null,2)}`);
 	        }
         });
         e.preventDefault();
 	}); 
 });
+
+function result(data){
+	$("#result").html(data);
+	spinner.hide();
+}

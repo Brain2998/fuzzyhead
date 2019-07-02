@@ -7,11 +7,16 @@ import os
 import requests
 import time
 
-def start_fuzzing(dict_path, divide_number, target_ip):
-    fuzzer_container = "registry:443/patator:latest"
-    fuzzer_start = "python2 -W ignore patator.py"
-    fuzzer_options = "ssh_login host="+target_ip+" user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'"
+def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip):
+    if fuzzer_type=='patator':
+        fuzzer_container = "registry:443/patator:latest"
+        fuzzer_start = "python2 -W ignore patator.py"
+        fuzzer_options = "ssh_login host="+target_ip+" user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'"
     
+    if fuzzer_type == "dirsearch":
+        fuzzer_container = "registry:443/dirsearch:latest"
+        fuzzer_start = "python3 -W ignore dirsearch.py"
+        fuzzer_options = "--url "+target_ip+" -e html --wordlist=wordlist.txt --simple-report=/dirsearch/result.txt"
     upload_dict_url = "http://backend:5000/uploader"
     remove_dict_url = "http://backend:5000/remover"
     
@@ -51,11 +56,7 @@ def start_fuzzing(dict_path, divide_number, target_ip):
 
     while not result.ready():
         time.sleep(1)
-    
-    for taskid in taskid_list:
-        print (remove_dict_url+'/'+str(taskid))
-        requests.get(remove_dict_url+'/'+str(taskid))
-
+        
     for result_id in result_id_list:
         ares = AsyncResult(result_id,app=fuzzer)
         output = output+ares.get()

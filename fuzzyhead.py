@@ -33,7 +33,7 @@ def root():
         target_ip, divide_number, flask.request.form['cli_args']))
         conn.commit()
         fuzzing_dict.save(dict_path)
-        return script.start_fuzzing(dict_path, divide_number, target_ip)
+        return script.start_fuzzing(flask.request.form['fuzzer'], dict_path, divide_number, target_ip)
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 
