@@ -14,6 +14,10 @@ $(document).ready(function() {
 	        {
 	          $("#result").html(data);
 	          spinner.hide();
+	        },
+	        error: function(err){
+	        	console.log(`ajax err: ${JSON.stringify(err,null,2)}`)
+	        	spinner.hide();
 	        }
         });
         e.preventDefault();

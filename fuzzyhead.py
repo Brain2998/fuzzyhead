@@ -49,5 +49,6 @@ def send_js(path):
 def send_fonts(path):
     return add_cors(flask.send_from_directory('fonts', path))
 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
