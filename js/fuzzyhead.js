@@ -13,17 +13,17 @@ $(document).ready(function() {
 		    processData: false,
 	        success: function(data)
 	        {
-	        	result(data)
+	        	showResult(data);
 	        },
 	        error: function(err){
-	        	result(`ajax err: ${JSON.stringify(err,null,2)}`);
+	        	showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
 	        }
         });
         e.preventDefault();
 	}); 
 });
 
-function result(data){
+function showResult(data){
 	$("#result").html(data);
 	spinner.hide();
 }
