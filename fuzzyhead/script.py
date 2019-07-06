@@ -65,30 +65,41 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip):
                output = output+AsyncResult(result_id,app=fuzzer).get()
                l = l - 1
                result_id_list.remove(result_id)
-               print(round(100 - l/a * 100))
 
     os.remove(dict_path)
     return parse_func(output)
 
 def parsePatator(output):
-    strings=output.split('\\n')
-    match=strings[4].split('|')
-    stats=strings[-2]
-    valueIndex=stats.index('Size: ', )+6
-    hits=stats[valueIndex:valueIndex+1]
-    done=stats[valueIndex+2:valueIndex+3]
-    skip=stats[valueIndex+4:valueIndex+5]
-    fail=stats[valueIndex+6:valueIndex+7]
-    size=stats[valueIndex+8:valueIndex+9]
-    time=stats[stats.index('Time: ')+6:]
-    return json.dumps({'match':match[1], 'hits':hits, 'done':done, 
-    'skip':skip, 'fail':fail, 'size':size, 'time':time})
+    blocks=output.split("b'")
+    if '' in blocks:
+        blocks.remove('')
+    hits=0
+    done=0
+    skip=0
+    fail=0
+    size=0
+    match = []
+    for b in blocks:
+        strings=b.split('\\n')
+        if len(strings)==7:
+            result=strings[4].split('|')
+            match.append(result[1])
+        stats=strings[-2]
+        valueIndex=stats.index('Size: ', )+6
+        hits+=int(stats[valueIndex:valueIndex+1])
+        done+=int(stats[valueIndex+2:valueIndex+3])
+        skip+=int(stats[valueIndex+4:valueIndex+5])
+        fail+=int(stats[valueIndex+6:valueIndex+7])
+        size+=int(stats[valueIndex+8:valueIndex+9])
+        #time+=stats[stats.index('Time: ')+6:]
+    return json.dumps({'match':match, 'hits':hits, 'done':done, 
+        'skip':skip, 'fail':fail, 'size':size})
 
 def parseDirsearch(output):
     strings=output.split('\n')
     if '' in strings:
         strings.remove('')
-    result=[]
+    match=[]
     for s in strings:
-        result.append(s[s.rindex('/')+1:])
-    return json.dumps({'match':result})
+        match.append(s[s.rindex('/')+1:])
+    return json.dumps({'match':match})
