@@ -11,6 +11,7 @@ import json
 
 def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip, task_id, conn, cursor):
     try:
+        start_time=time.time()
         if fuzzer_type=='patator':
             fuzzer_container = "registry:443/patator:latest"
             fuzzer_start = "python2 -W ignore patator.py"
@@ -68,7 +69,7 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip, task_id, con
                     result_id_list.remove(result_id)
 
         os.remove(dict_path)
-        output=parse_func(output)
+        output=parse_func(output, time.time()-start_time)
         cursor.execute('UPDATE tasks SET status=?, result=? WHERE id=?', ('Finished', output, task_id))
         conn.commit()
         return output
@@ -77,7 +78,7 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip, task_id, con
         conn.commit()
     
 
-def parsePatator(output):
+def parsePatator(output, fuztime):
     blocks=output.split("b'")
     if '' in blocks:
         blocks.remove('')
@@ -87,27 +88,30 @@ def parsePatator(output):
     fail=0
     size=0
     match = []
+    speedRate=[]
     for b in blocks:
         strings=b.split('\\n')
-        if len(strings)==7:
-            result=strings[4].split('|')
-            match.append(result[1])
+        resultLng=len(strings)
+        if resultLng>6:
+            for i in range(4, resultLng-2):
+                result=strings[i].split('|')
+                match.append(result[1])
         stats=strings[-2]
-        valueIndex=stats.index('Size: ', )+6
-        hits+=int(stats[valueIndex:valueIndex+1])
-        done+=int(stats[valueIndex+2:valueIndex+3])
-        skip+=int(stats[valueIndex+4:valueIndex+5])
-        fail+=int(stats[valueIndex+6:valueIndex+7])
-        size+=int(stats[valueIndex+8:valueIndex+9])
-        #time+=stats[stats.index('Time: ')+6:]
-    return json.dumps({'match':match, 'hits':hits, 'done':done, 
-        'skip':skip, 'fail':fail, 'size':size})
+        values=stats[stats.index('Size: ', )+6:stats.index('Avg')-2].split('/')
+        hits+=int(values[0])
+        done+=int(values[1])
+        skip+=int(values[2])
+        fail+=int(values[3])
+        size+=int(values[4])
+        speedRate.append(int(stats[stats.index('Avg')+5:stats.index(' r/s')]))
+    return json.dumps({'match':match, 'hits':hits, 'done':done, 'skip':skip, 'fail':fail, 
+    'size':size, 'avg': sum(speedRate)/len(speedRate), 'time': fuztime})
 
-def parseDirsearch(output):
+def parseDirsearch(output, fuztime):
     strings=output.split('\n')
     if '' in strings:
         strings.remove('')
     match=[]
     for s in strings:
         match.append(s[s.rindex('/')+1:])
-    return json.dumps({'match':match})
+    return json.dumps({'match': match, 'time': fuztime})
