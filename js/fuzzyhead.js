@@ -2,9 +2,10 @@ $(document).ready(function() {
 	$("#header").load("header.html");
 	if ($('body').hasClass('index')){
 		var spinner = $('#spinner');
+		var fuzzingResult=$("#result");
 		spinner.hide();
 		$('form').submit(function(e) {
-			$("#result").empty();
+			fuzzingResult.empty();
 			spinner.show();
 			$.ajax({
 				async: true,
@@ -14,8 +15,7 @@ $(document).ready(function() {
 		        cache: false,
 			    contentType: false,
 			    processData: false,
-		        success: function(data)
-		        {
+		        success: function(data){
 		        	var result = JSON.parse(data);
 		        	var htmlResult='';
 		        	htmlResult += '<tr>';
@@ -59,11 +59,39 @@ $(document).ready(function() {
 	        e.preventDefault();
 		}); 
 		function showResult(data){
-			$("#result").html(data);
+			fuzzingResult.html(data);
 			spinner.hide();
 		}
 	}
 	if ($('body').hasClass('list')){
+		var taskList=$('#task_list tr:last');
+		$.ajax({
+			async: true,
+			type: "GET",
+			url: "/getTaskList",
+			data: {
+				getDbData: true
+			},
+			success: function(data){
+				var result = JSON.parse(data);
+		        var htmlResult='';
+		        console.log(result)
+		        for (var i=0; i<result.length; ++i){
+		        	htmlResult+='<tr>';
+		        	htmlResult+='<td><label>'+result[i][1]+'</label></td>';
+		        	htmlResult+='<td><label>'+result[i][0]+'</label></td>';
+		        	htmlResult+='<td><label>'+result[i][2]+'</label></td>';
+		        	htmlResult+='</tr>';
+		        }
+				showResult(htmlResult);
+			},
+			error: function(err){
+				showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
+			}
+		});
+		function showResult(data){
+			taskList.after(data);
+		}
 	}
 });
 

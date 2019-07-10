@@ -3,13 +3,14 @@ from fuzzyhead import script
 import os
 import datetime
 import sqlite3
+import json
 
 app = flask.Flask(__name__)
 conn = sqlite3.connect('task.db', check_same_thread=False)
 cursor = conn.cursor()
-cursor.execute("""CREATE TABLE IF NOT EXISTS tasks (id text PRIMARY KEY, name text NOT NULL, 
-    dict_path text NOT NULL, fuzzer text NOT NULL, target_ip text NOT NULL, divide_number integer, 
-    cli_args text, status text NOT NULL, result text);""")
+cursor.execute("""CREATE TABLE IF NOT EXISTS tasks (id text PRIMARY KEY, name text NOT NULL,
+    started_at text NOT NULL, dict_path text NOT NULL, fuzzer text NOT NULL, target_ip text NOT NULL, 
+    divide_number integer, cli_args text, status text NOT NULL, result text);""")
 conn.commit()
 
 def add_cors(response):
@@ -24,12 +25,12 @@ def root():
         task_name=flask.request.form['name']
         divide_number=int(flask.request.form['divide_number'])
         target_ip=flask.request.form['target_ip']
-
-        task_id=task_name+'_'+str(datetime.datetime.now().time())
+        started=str(datetime.datetime.now().time())
+        task_id=task_name+'_'+started
         dict_path=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'dict', dict_name)
         
-        cursor.execute("""INSERT INTO tasks (id, name, dict_path, fuzzer, target_ip, divide_number, 
-        cli_args, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (task_id, task_name, dict_name, 
+        cursor.execute("""INSERT INTO tasks (id, name, started_at, dict_path, fuzzer, target_ip, divide_number, 
+        cli_args, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (task_id, task_name, started, dict_name,
         flask.request.form['fuzzer'], target_ip, divide_number, flask.request.form['cli_args'], 'Running'))
         conn.commit()
         fuzzing_dict.save(dict_path)
@@ -54,6 +55,10 @@ def send_fonts(path):
 
 @app.route('/getTaskList')
 def getTaskList():
+    args=flask.request.args
+    if (len(args)>0 and args['getDbData']=='true'):
+        cursor.execute('SELECT name, started_at, status FROM tasks')
+        return add_cors(flask.Response(json.dumps(cursor.fetchall())))
     return add_cors(flask.send_from_directory('.', 'list.html'))
 
 if __name__ == '__main__':
