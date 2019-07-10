@@ -36,6 +36,9 @@ def root():
         return script.start_fuzzing(flask.request.form['fuzzer'], dict_path, divide_number, target_ip, task_id, conn, cursor)
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
+@app.route('/header.html')
+def send_header():
+    return add_cors(flask.send_from_directory('.', 'header.html'))
 
 @app.route('/css/<path:path>')
 def send_css(path):
@@ -49,6 +52,9 @@ def send_js(path):
 def send_fonts(path):
     return add_cors(flask.send_from_directory('fonts', path))
 
+@app.route('/getTaskList')
+def getTaskList():
+    return add_cors(flask.send_from_directory('.', 'list.html'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
