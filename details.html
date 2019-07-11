@@ -42,21 +42,49 @@
         }
     </style>
 </head>
-<body class="list">
-    <div id="header"></div>
-    <button id="refresh">Refresh</button>
-    <table id="task_list" width="70%">
-      <tbody>
-        <tr >
-            <th>Time</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-      </tbody>
-    </table>
-    
 
+<body class="details">
+    <div id="header"></div>
+
+    <table>
+   <tbody>
+   <tr>
+    <td><label>Name</label></td>
+    <td><label id="name"></label></td>
+   </tr>
+   <tr>
+    <td><label>Started at</label></td>
+    <td><label id="started_at"></label></td>
+   </tr>
+   <tr>
+     <td><label>Fuzzer</label></td>
+      <td><label id="fuzzer"></label></td>
+   </tr>
+    <tr>
+    <td><label>Target IP</label></td>
+    <td><label id="target_ip"></label></td>
+   </tr>
+   <tr>
+    <td><label>Dictionary</label></td>
+    <td><label id="dict"></label></td>
+   </tr>
+   <tr>
+    <td><label>Words per worker</label></td>
+    <td><label id="divide_number"></label></td>
+   </tr>
+   <tr>
+    <td><label>Command line arguments</label></td>
+    <td><label id="cli_args"></label></td>
+   </tr>
+   <tr>
+    <td><label>Status</label></td>
+    <td><label id="status"></label></td>
+   </tr>
+  </tbody>
+  </table>
+  <div class="loader" id="spinner"></div>
+  <div id="result"></div>
+  
 <hr style="margin-top: 30px;">
 
 </body>

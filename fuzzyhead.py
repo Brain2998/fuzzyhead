@@ -58,8 +58,23 @@ def getTaskList():
     args=flask.request.args
     if (len(args)>0 and args['getDbData']=='true'):
         cursor.execute('SELECT name, started_at, status FROM tasks')
-        return add_cors(flask.Response(json.dumps(cursor.fetchall())))
+        rows=cursor.fetchall()
+        result=[]
+        for r in rows:
+            result.append({'name': r[0], 'started_at': r[1], 'status': r[2]})
+        return add_cors(flask.Response(json.dumps(result)))
     return add_cors(flask.send_from_directory('.', 'list.html'))
+
+@app.route('/getTaskDetails')
+def getTaskDetails():
+    args=flask.request.args
+    if (args['getDbData']=='true'):
+        cursor.execute('SELECT * FROM tasks  WHERE id=?', (args['id'],))
+        result=cursor.fetchall()
+        return add_cors(flask.Response(json.dumps({'name': result[0][1], 'started_at': result[0][2], 
+        'dict': result[0][3], 'fuzzer': result[0][4], 'target_ip': result[0][5], 'divide_number': result[0][6],
+        'cli_args': result[0][7], 'status': result[0][8], 'result': result[0][9]})))
+    return add_cors(flask.send_from_directory('.', 'details.html'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
