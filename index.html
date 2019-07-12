@@ -52,66 +52,64 @@
     <div class="container">
         
 
-<table border="0">
-<tbody><tr><td>
+
 <h2>Create new task</h2>
-  <form method="POST" enctype="multipart/form-data" action="" class="form-horizontal">
-   	<div class="form-group">
-    	<label class="col-sm-2 control-label">Name:</label>
-    	<div class="col-sm-10">
-    		<input type="text" name="name" size="50" required="" class="form-control" placeholder="Task name">
-  		</div>
-  	</div>
-   	<div class="form-group">
-    	<label class="col-sm-2 control-label">Fuzzer:</label>
-    	<div class="col-sm-10">
-	        <select required="" name="fuzzer" size="2" class="form-control">
-	            <option value="dirsearch" selected="selected">dirsearch</option>
-	            <option value="patator">patator</option>
-	        </select>
-    	</div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-2 control-label">Target IP:</label>
-    	<div class="col-sm-10">
-    		<input type="text" name="target_ip" minlength="7" maxlength="15" size="15" required="" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" class="form-control" placeholder="0.0.0.0">
-    	</div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-2 control-label">Dictionary:</label>
-    	<div class="col-sm-10">
-    		<input type="file" name="dict" required="" class="btn btn-default">
-    	</div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-2 control-label">Words per worker:</label>
-    	<div class="col-sm-10">
-    		<input type="number" name="divide_number" value="5000" required="" class="form-control">
-    	</div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-2 control-label">Max requests per second:</label>
-    	<div class="col-sm-10">
-    		<input type="number" name="rps" value="100" required="" class="form-control">
-    	</div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-2 control-label">Command line arguments:</label>
-    	<div class="col-sm-10">
-    		<input type="text" name="cli_args" size="50" class="form-control">
-    	</div>
-    </div>
-    <div class="form-group">
-    	<div class="col-sm-10">
-    		<input type="submit" id="start_btn" value="Start" class="btn btn-default">
-    		<button id="stop" class="btn btn-default">Stop</button>
-    	</div>
-    </div>
-  </form>
- <div class="loader" id="spinner"></div>
- <div id="result"></div>
-</td></tr>
-</tbody></table>
+    <form method="POST" enctype="multipart/form-data" action="" class="form-horizontal">
+	   	<div class="form-group">
+	    	<label class="col-sm-2 control-label">Name:</label>
+	    	<div class="col-sm-10">
+	    		<input type="text" name="name" size="50" required="" class="form-control" placeholder="Task name">
+	  		</div>
+	  	</div>
+	   	<div class="form-group">
+	    	<label class="col-sm-2 control-label">Fuzzer:</label>
+	    	<div class="col-sm-10">
+		        <select required="" name="fuzzer"  class="form-control">
+		            <option value="dirsearch" >dirsearch</option>
+		            <option value="patator">patator</option>
+		        </select>
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<label class="col-sm-2 control-label">Target IP:</label>
+	    	<div class="col-sm-10">
+	    		<input type="text" name="target_ip" minlength="7" maxlength="15" size="15" required="" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" class="form-control" placeholder="0.0.0.0">
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<label class="col-sm-2 control-label">Dictionary:</label>
+	    	<div class="col-sm-10">
+	    		<input type="file" name="dict" required="" class="btn btn-default">
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<label class="col-sm-2 control-label">Words per worker:</label>
+	    	<div class="col-sm-10">
+	    		<input type="number" name="divide_number" value="5000" required="" class="form-control">
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<label class="col-sm-2 control-label">Max requests per second:</label>
+	    	<div class="col-sm-10">
+	    		<input type="number" name="rps" value="100" required="" class="form-control">
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<label class="col-sm-2 control-label">Command line arguments:</label>
+	    	<div class="col-sm-10">
+	    		<input type="text" name="cli_args" size="50" class="form-control">
+	    	</div>
+	    </div>
+	    <div class="form-group">
+	    	<div class="col-sm-10">
+	    		<input type="submit" id="start_btn" value="Start" class="btn btn-default">
+	    		<button id="stop" class="btn btn-default">Stop</button>
+	    	</div>
+	    </div>
+  	</form>
+	<div class="loader" id="spinner"></div>
+	<div id="result"></div>
+
 
     </div>
 </div>

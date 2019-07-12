@@ -153,38 +153,56 @@ $(document).ready(function() {
 		stop.hide();
 	}
 	function statsTemplate(match, hits, done, skip, fail, size, avg, time){
-		return `<tr>
-		<td><label>Matches: </label></td>
-		<td><label>${match}</label></td>
-		</tr>
-		<tr>
-		<td><label>Hits: </label></td>
-		<td><label>${hits==undefined ? '' : hits}</label></td>
-		</tr>
-		<tr>
-		<td><label>Done: </label></td>
-		<td><label>${done==undefined ? '' : done}</label></td>
-		</tr>
-		<tr>
-		<td><label>Skip: </label></td>
-		<td><label>${skip==undefined ? '' : skip}</label></td>
-		</tr>
-		<tr>
-		<td><label>Fail: </label></td>
-		<td><label>${fail==undefined ? '' : fail}</label></td>
-		</tr>
-		<tr>
-		<td><label>Size: </label></td>
-		<td><label>${size==undefined ? '' : size}</label></td>
-		</tr>
-		<tr>
-		<td><label>Average requests/second: </label></td>
-		<td><label>${avg==undefined ? '' : avg}</label></td>
-		</tr>
-		<tr>
-		<td><label>Fuzzing time: </label></td>
-		<td><label>${time}</label></td>
-		</tr>`;
+		return `<form class="form-horizontal">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Matches: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${match}</p>
+			</div>
+		</div>
+		<div class="form-group">	
+			<label class="col-sm-2 control-label">Hits: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${hits==undefined ? '' : hits}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Done: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${done==undefined ? '' : done}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Skip: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${skip==undefined ? '' : skip}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Fail: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${fail==undefined ? '' : fail}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Size: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${size==undefined ? '' : size}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Average requests/second: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${avg==undefined ? '' : avg}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Fuzzing time: </label>
+			<div class="col-sm-10">
+				<p class="form-control-static">${time}</p>
+			</div>
+		</div>
+		</form>`;
 	}
 });
 
