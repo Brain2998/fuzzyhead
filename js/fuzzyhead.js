@@ -86,7 +86,6 @@ $(document).ready(function() {
 				getDbData: true
 			},
 			success: function(data){
-				console.log(data)
 				result=JSON.parse(data);
 				$('#name').text(result.name);
 				$('#started_at').text(result.started_at);
