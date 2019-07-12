@@ -25,16 +25,17 @@ def root():
         task_name=flask.request.form['name']
         divide_number=int(flask.request.form['divide_number'])
         target_ip=flask.request.form['target_ip']
+        cli_args=flask.request.form['cli_args']
         started=str(datetime.datetime.now().time())
         task_id=task_name+'_'+started
         dict_path=os.path.join(os.path.dirname(os.path.realpath('__file__')), 'dict', dict_name)
         
         cursor.execute("""INSERT INTO tasks (id, name, started_at, dict_path, fuzzer, target_ip, divide_number, 
         cli_args, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (task_id, task_name, started, dict_name,
-        flask.request.form['fuzzer'], target_ip, divide_number, flask.request.form['cli_args'], 'Running'))
+        flask.request.form['fuzzer'], target_ip, divide_number, cli_args, 'Running'))
         conn.commit()
         fuzzing_dict.save(dict_path)
-        return script.start_fuzzing(flask.request.form['fuzzer'], dict_path, divide_number, target_ip, task_id, conn, cursor)
+        return script.start_fuzzing(flask.request.form['fuzzer'], dict_path, divide_number, cli_args, task_id, conn, cursor)
     return add_cors(flask.send_from_directory('.', 'index.html'))
 
 @app.route('/header.html')

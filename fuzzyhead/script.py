@@ -9,18 +9,18 @@ import requests
 import time
 import json
 
-def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip, task_id, conn, cursor):
+def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn, cursor):
     try:
         start_time=time.time()
         if fuzzer_type=='patator':
             fuzzer_container = "registry:443/patator:latest"
             fuzzer_start = "python2 -W ignore patator.py"
-            fuzzer_options = "ssh_login host="+target_ip+" user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'"
+            fuzzer_options = cli_args
             parse_func = parsePatator
         if fuzzer_type == "dirsearch":
             fuzzer_container = "registry:443/dirsearch:latest"
             fuzzer_start = "python3 -W ignore dirsearch.py"
-            fuzzer_options = "--url "+target_ip+" -e html --wordlist=wordlist.txt --simple-report=/dirsearch/result.txt"
+            fuzzer_options = cli_args
             parse_func = parseDirsearch
         upload_dict_url = "http://backend:5000/uploader"
         remove_dict_url = "http://backend:5000/remover"

@@ -89,11 +89,17 @@
     <td><input type="number" name="divide_number" value="5000" required=""></td>
    </tr>
    <tr>
+   	<tr>
+    <td><label>Max requests per second:</label></td>
+    <td><input type="number" name="rps" value="100" required=""></td>
+   </tr>
+   <tr>
     <td><label>Command line arguments:</label></td>
     <td><input type="text" name="cli_args" size="50"></td>
    </tr>
    <tr>
-     <td colspan="2"><input type="submit" id="start_btn" value="Start"></td>
+     <td><input type="submit" id="start_btn" value="Start"></td>
+     <td><button id="stop">Stop</button></td>
    </tr>
   </tbody></table>
   </form>

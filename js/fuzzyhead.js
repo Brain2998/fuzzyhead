@@ -1,13 +1,23 @@
 $(document).ready(function() {
 	$("#header").load("header.html");
+	var spinner = $('#spinner');
+	var fuzzingResult=$("#result");
+	var stop=$("#stop");
+	
 	//Create task page
 	if ($('body').hasClass('index')){
-		var spinner = $('#spinner');
-		var fuzzingResult=$("#result");
-		spinner.hide();
+		hideSpinner();
+		var fuzzer=$("select[name='fuzzer']");
+		var target_ip=$("input[name='target_ip']");
+		var cli_args=$("input[name='cli_args']")
+		createCli();
+		$("select[name='fuzzer'], input[name='target_ip']").on('input', function(){
+			console.log()
+			createCli();
+		});
 		$('form').submit(function(e) {
 			fuzzingResult.empty();
-			spinner.show();
+			showSpinner();
 			$.ajax({
 				async: true,
 		        type: "POST",
@@ -27,9 +37,19 @@ $(document).ready(function() {
 	        });
 	        e.preventDefault();
 		}); 
+		function createCli(){
+			switch (fuzzer.val()){
+				case "dirsearch":
+					cli_args.val(`--url ${target_ip.val()} -e html --wordlist=wordlist.txt --simple-report=/dirsearch/result.txt`);
+					break;
+				case "patator":
+					cli_args.val(`ssh_login host=${target_ip.val()} user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'`)
+			}
+		}
+
 		function showResult(data){
 			fuzzingResult.html(data);
-			spinner.hide();
+			hideSpinner();
 		}
 	}
 	//Task list page
@@ -72,17 +92,14 @@ $(document).ready(function() {
 	}
 	//Task details page
 	if ($('body').hasClass('details')){
-		var spinner = $('#spinner');
-		var fuzzingResult=$("#result");
-		var restart=$("#restart");
-		spinner.hide();
-		restart.hide();
+		hideSpinner();
 		var args=window.location.search;
 		var taskId=args.slice(4, args.indexOf('&'));
 		getTaskDetails();
 		$('#refresh').click(function(){
 			getTaskDetails();
 		});
+
 		function getTaskDetails(){
 			$.ajax({
 				async: true,
@@ -106,7 +123,7 @@ $(document).ready(function() {
 					switch (status)
 					{
 						case ('Running'):
-							spinner.show();
+							showSpinner();
 							break;
 						case ('Finished'):
 							statsResult=JSON.parse(result.result);
@@ -114,7 +131,7 @@ $(document).ready(function() {
 			        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
 							break;
 						case ('Failed'):
-							restart.show();
+							break;
 					}
 					
 				},
@@ -126,6 +143,14 @@ $(document).ready(function() {
 		function showResult(data){
 			fuzzingResult.html(data);
 		}
+	}
+	function showSpinner(){
+		spinner.show();
+		stop.show();
+	}
+	function hideSpinner(){
+		spinner.hide();
+		stop.hide();
 	}
 	function statsTemplate(match, hits, done, skip, fail, size, avg, time){
 		return `<tr>
