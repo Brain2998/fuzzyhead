@@ -67,8 +67,8 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, target_ip, task_id, con
                     output = output+AsyncResult(result_id,app=fuzzer).get()
                     l = l - 1
                     result_id_list.remove(result_id)
-
-        os.remove(dict_path)
+        if os.path.exists(dict_path):
+            os.remove(dict_path)
         output=parse_func(output, round(time.time()-start_time, 2))
         cursor.execute('UPDATE tasks SET status=?, result=? WHERE id=?', ('Finished', output, task_id))
         conn.commit()

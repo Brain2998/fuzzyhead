@@ -74,7 +74,9 @@ $(document).ready(function() {
 	if ($('body').hasClass('details')){
 		var spinner = $('#spinner');
 		var fuzzingResult=$("#result");
+		var restart=$("#restart");
 		spinner.hide();
+		restart.hide();
 		var args=window.location.search;
 		var taskId=args.slice(4, args.indexOf('&'));
 		getTaskDetails();
@@ -101,14 +103,20 @@ $(document).ready(function() {
 					$('#cli_args').text(result.cli_args);
 					var status=result.status;
 					$('#status').text(status);
-					if (status=='Running'){
-						spinner.show();
-					}
-					else {
-						statsResult=JSON.parse(result.result);
+					switch (status)
+					{
+						case ('Running'):
+							spinner.show();
+							break;
+						case ('Finished'):
+							statsResult=JSON.parse(result.result);
 						showResult(statsTemplate(statsResult.match, statsResult.hits, statsResult.done, statsResult.skip, 
 			        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
+							break;
+						case ('Failed'):
+							restart.show();
 					}
+					
 				},
 				error: function(err){
 					showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
