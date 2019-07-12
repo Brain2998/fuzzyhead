@@ -49,46 +49,61 @@
     <div class="container">
     <button id="refresh" class="btn btn-default">Refresh</button>
     <button id="stop" class="btn btn-default">Stop</button>
-        <table border="0" >
-       <tbody>
-       <tr>
-        <td><label>Name:</label></td>
-        <td><label id="name"></label></td>
-       </tr>
-       <tr>
-        <td><label>Started at:</label></td>
-        <td><label id="started_at"></label></td>
-       </tr>
-       <tr>
-         <td><label>Fuzzer:</label></td>
-          <td><label id="fuzzer"></label></td>
-       </tr>
-        <tr>
-        <td><label>Target IP:</label></td>
-        <td><label id="target_ip"></label></td>
-       </tr>
-       <tr>
-        <td><label>Dictionary:</label></td>
-        <td><label id="dict"></label></td>
-       </tr>
-       <tr>
-        <td><label>Words per worker:</label></td>
-        <td><label id="divide_number"></label></td>
-       </tr>
-       <tr>
-        <td><label>Command line arguments:</label></td>
-        <td><label id="cli_args"></label></td>
-       </tr>
-       <tr>
-        <td><label>Status:</label></td>
-        <td><label id="status"></label></td>
-       </tr>
-      </tbody>
-      </table>
+       <form class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Name: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="name"></p>
+            </div>
+        </div>
+        <div class="form-group">    
+            <label class="col-sm-2 control-label">Started at: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="started_at"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Fuzzer: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="fuzzer"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Target IP: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="target_ip"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Dictionary: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="dict"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Words per worker: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="divide_number"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Command line arguments: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="cli_args"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Status: </label>
+            <div class="col-sm-10">
+                <p class="form-control-static" id="status"></p>
+            </div>
+        </div>
+        </form>`;
       <div class="loader" id="spinner"></div>
       <div id="result"></div>
     </div>
     </div>
+    
 <hr style="margin-top: 30px;">
 
 </body>
