@@ -77,38 +77,44 @@ $(document).ready(function() {
 		spinner.hide();
 		var args=window.location.search;
 		var taskId=args.slice(4, args.indexOf('&'));
-		$.ajax({
-			async: true,
-			type: "GET",
-			url: "/getTaskDetails",
-			data: {
-				id: taskId,
-				getDbData: true
-			},
-			success: function(data){
-				result=JSON.parse(data);
-				$('#name').text(result.name);
-				$('#started_at').text(result.started_at);
-				$('#fuzzer').text(result.fuzzer);
-				$('#target_ip').text(result.target_ip);
-				$('#dict').text(result.dict);
-				$('#divide_number').text(result.divide_number);
-				$('#cli_args').text(result.cli_args);
-				var status=result.status;
-				$('#status').text(status);
-				if (status=='Running'){
-					spinner.show();
-				}
-				else {
-					statsResult=JSON.parse(result.result);
-					showResult(statsTemplate(statsResult.match, statsResult.hits, statsResult.done, statsResult.skip, 
-		        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
-				}
-			},
-			error: function(err){
-				showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
-			}
+		getTaskDetails();
+		$('#refresh').click(function(){
+			getTaskDetails();
 		});
+		function getTaskDetails(){
+			$.ajax({
+				async: true,
+				type: "GET",
+				url: "/getTaskDetails",
+				data: {
+					id: taskId,
+					getDbData: true
+				},
+				success: function(data){
+					result=JSON.parse(data);
+					$('#name').text(result.name);
+					$('#started_at').text(result.started_at);
+					$('#fuzzer').text(result.fuzzer);
+					$('#target_ip').text(result.target_ip);
+					$('#dict').text(result.dict);
+					$('#divide_number').text(result.divide_number);
+					$('#cli_args').text(result.cli_args);
+					var status=result.status;
+					$('#status').text(status);
+					if (status=='Running'){
+						spinner.show();
+					}
+					else {
+						statsResult=JSON.parse(result.result);
+						showResult(statsTemplate(statsResult.match, statsResult.hits, statsResult.done, statsResult.skip, 
+			        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
+					}
+				},
+				error: function(err){
+					showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
+				}
+			});
+		}
 		function showResult(data){
 			fuzzingResult.html(data);
 		}
