@@ -54,13 +54,13 @@ $(document).ready(function() {
 	}
 	//Task list page
 	if ($('body').hasClass('list')){
-		var taskList=$('#task_list tr:last');
+		var taskList=$('#task_list tbody');
 		getTaskList();
 		$('#refresh').click(function(){
 			getTaskList();
 		});
 		function getTaskList(){
-			$('#task_list tr:gt(0)').empty();
+			taskList.empty();
 			$.ajax({
 				async: true,
 				type: "GET",
@@ -87,7 +87,7 @@ $(document).ready(function() {
 			});
 		}
 		function showResult(data){
-			taskList.after(data);
+			taskList.html(data);
 		}
 	}
 	//Task details page
