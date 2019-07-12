@@ -73,9 +73,9 @@ $(document).ready(function() {
 			        var htmlResult='';
 			        for (var i=0; i<result.length; ++i){
 			        	htmlResult+='<tr>';
-			        	htmlResult+='<td><label>'+result[i].started_at+'</label></td>';
-			        	htmlResult+='<td><label>'+result[i].name+'</label></td>';
-			        	htmlResult+='<td><label>'+result[i].status+'</label></td>';
+			        	htmlResult+='<td>'+result[i].started_at+'</td>';
+			        	htmlResult+='<td>'+result[i].name+'</td>';
+			        	htmlResult+='<td>'+result[i].status+'</td>';
 			        	htmlResult+="<td><a href=\"/getTaskDetails?id="+result[i].name+'_'+result[i].started_at+"&getDbData=false\" class=\"btn btn-default\">Details</a></td>";
 			        	htmlResult+='</tr>';
 			        }
