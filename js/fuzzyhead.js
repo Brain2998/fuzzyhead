@@ -80,9 +80,11 @@ $(document).ready(function() {
 			        	htmlResult+='</tr>';
 			        }
 					showResult(htmlResult);
+					$("#task_list").dataTable({"bDestroy": true});
 				},
 				error: function(err){
 					showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
+					
 				}
 			});
 		}
