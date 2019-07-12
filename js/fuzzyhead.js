@@ -18,40 +18,8 @@ $(document).ready(function() {
 			    processData: false,
 		        success: function(data){
 		        	var result = JSON.parse(data);
-		        	var htmlResult='';
-		        	htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Matches: </label></td>';
-	        		htmlResult += '<td><label>'+result.match+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Hits: </label></td>';
-	        		htmlResult += '<td><label>'+(result.hits==undefined ? '' : result.hits)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Done: </label></td>';
-	        		htmlResult += '<td><label>'+(result.done==undefined ? '' : result.done)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Skip: </label></td>';
-	        		htmlResult += '<td><label>'+(result.skip==undefined ? '' : result.skip)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Fail: </label></td>';
-	        		htmlResult += '<td><label>'+(result.fail==undefined ? '' : result.fail)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Size: </label></td>';
-	        		htmlResult += '<td><label>'+(result.size==undefined ? '' : result.size)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Average requests/second: </label></td>';
-	        		htmlResult += '<td><label>'+(result.avg==undefined ? '' : result.avg)+'</label></td>';
-	        		htmlResult += '</tr>';
-	        		htmlResult += '<tr>';
-	        		htmlResult += '<td><label>Fuzzing time: </label></td>';
-	        		htmlResult += '<td><label>'+result.time+'</label></td>';
-	        		htmlResult += '</tr>';
-		        	showResult(htmlResult);
+		        	showResult(statsTemplate(result.match, result.hits, result.done, result.skip, 
+		        		result.fail, result.size, result.avg, result.time));
 		        },
 		        error: function(err){
 		        	showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
@@ -133,7 +101,9 @@ $(document).ready(function() {
 					spinner.show();
 				}
 				else {
-					showResult(result.result)
+					statsResult=JSON.parse(result.result);
+					showResult(statsTemplate(statsResult.match, statsResult.hits, statsResult.done, statsResult.skip, 
+		        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
 				}
 			},
 			error: function(err){
@@ -143,6 +113,40 @@ $(document).ready(function() {
 		function showResult(data){
 			fuzzingResult.html(data);
 		}
+	}
+	function statsTemplate(match, hits, done, skip, fail, size, avg, time){
+		return `<tr>
+		<td><label>Matches: </label></td>
+		<td><label>${match}</label></td>
+		</tr>
+		<tr>
+		<td><label>Hits: </label></td>
+		<td><label>${hits==undefined ? '' : hits}</label></td>
+		</tr>
+		<tr>
+		<td><label>Done: </label></td>
+		<td><label>${done==undefined ? '' : done}</label></td>
+		</tr>
+		<tr>
+		<td><label>Skip: </label></td>
+		<td><label>${skip==undefined ? '' : skip}</label></td>
+		</tr>
+		<tr>
+		<td><label>Fail: </label></td>
+		<td><label>${fail==undefined ? '' : fail}</label></td>
+		</tr>
+		<tr>
+		<td><label>Size: </label></td>
+		<td><label>${size==undefined ? '' : size}</label></td>
+		</tr>
+		<tr>
+		<td><label>Average requests/second: </label></td>
+		<td><label>${avg==undefined ? '' : avg}</label></td>
+		</tr>
+		<tr>
+		<td><label>Fuzzing time: </label></td>
+		<td><label>${time}</label></td>
+		</tr>`;
 	}
 });
 
