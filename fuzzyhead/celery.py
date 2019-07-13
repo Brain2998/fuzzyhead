@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 from celery import Celery
+from .config_parser import backend, broker
 
 app = Celery('fuzzyhead',
-            backend='amqp',
-            broker='amqp://vicot:pnKKTCd5q42O@10.1.38.14',
+            backend=backend,
+            broker=broker,
             include=['fuzzyhead.tasks'])
 

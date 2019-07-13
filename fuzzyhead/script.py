@@ -9,21 +9,21 @@ import requests
 import time
 import json
 
+from .config_parser import registry, dict_upload
+
 def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn, cursor):
     try:
         start_time=time.time()
         if fuzzer_type=='patator':
-            fuzzer_container = "registry:443/patator:latest"
+            fuzzer_container = registry+"/patator:latest"
             fuzzer_start = "python2 -W ignore patator.py"
             fuzzer_options = cli_args
             parse_func = parsePatator
         if fuzzer_type == "dirsearch":
-            fuzzer_container = "registry:443/dirsearch:latest"
+            fuzzer_container = registry+"/dirsearch:latest"
             fuzzer_start = "python3 -W ignore dirsearch.py"
             fuzzer_options = cli_args
             parse_func = parseDirsearch
-        upload_dict_url = "http://backend:5000/uploader"
-        remove_dict_url = "http://backend:5000/remover"
 
         result_id_list = []
         taskid_list = []
@@ -50,7 +50,7 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn
                 dictExceed=True
 
             files = {'file': open('dict/'+str(taskid), 'rb')}
-            requests.post(upload_dict_url, files=files)
+            requests.post(dict_upload, files=files)
             os.remove('dict/'+str(taskid))
 
             result = fuzzer.delay(taskid, fuzzer_container, fuzzer_start, fuzzer_options)
@@ -105,7 +105,7 @@ def parsePatator(output, fuztime):
         size+=int(values[4])
         speedRate.append(int(stats[stats.index('Avg')+5:stats.index(' r/s')]))
     return json.dumps({'match':match, 'hits':hits, 'done':done, 'skip':skip, 'fail':fail, 
-    'size':size, 'avg': sum(speedRate)/len(speedRate), 'time': fuztime})
+    'size':size, 'avg': sum(speedRate), 'time': fuztime})
 
 def parseDirsearch(output, fuztime):
     strings=output.split('\n')
