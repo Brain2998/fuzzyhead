@@ -9,7 +9,8 @@ $(document).ready(function() {
 		hideSpinner();
 		var fuzzer=$("select[name='fuzzer']");
 		var target_ip=$("input[name='target_ip']");
-		var cli_args=$("input[name='cli_args']")
+		var cli_args=$("input[name='cli_args']");
+		var cli_args_ro=$("#cli_args_ro");
 		createCli();
 		$("select[name='fuzzer'], input[name='target_ip']").on('input', function(){
 			console.log()
@@ -18,11 +19,15 @@ $(document).ready(function() {
 		$('form').submit(function(e) {
 			fuzzingResult.empty();
 			showSpinner();
+			var formData=new FormData($('form')[0]);
+			formData.set('cli_args', cli_args.val()+' '+cli_args_ro.text())
+			//formData.cli_args_full=cli_args.val()+' '+cli_args_ro.text()
+			//console.log(formData)
 			$.ajax({
 				async: true,
 		        type: "POST",
 		        url: "/", 
-		        data: new FormData($('form')[0]), 
+		        data: formData, 
 		        cache: false,
 			    contentType: false,
 			    processData: false,
@@ -40,10 +45,12 @@ $(document).ready(function() {
 		function createCli(){
 			switch (fuzzer.val()){
 				case "dirsearch":
-					cli_args.val(`--url ${target_ip.val()} -e html --wordlist=wordlist.txt --simple-report=/dirsearch/result.txt`);
+					cli_args.val(`--url ${target_ip.val()} -e html`);
+					cli_args_ro.text('--wordlist=wordlist.txt --simple-report=/dirsearch/result.txt');
 					break;
 				case "patator":
-					cli_args.val(`ssh_login host=${target_ip.val()} user=victim password=FILE0 0=passwords.txt -x ignore:mesg='Authentication failed.'`)
+					cli_args.val(`ssh_login host=${target_ip.val()} user=victim -x ignore:mesg='Authentication failed.'`);
+					cli_args_ro.text('password=FILE0 0=passwords.txt');
 			}
 		}
 

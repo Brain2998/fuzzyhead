@@ -15,6 +15,7 @@ from .config_parser import registry, dict_upload, flower
 def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, rps, task_id, conn, cursor):
     try:
         start_time=time.time()
+        fuzzer_options = cli_args
         if fuzzer_type=='patator':
             fuzzer_container = registry+"/patator:latest"
             fuzzer_start = "python2 -W ignore patator.py"
@@ -23,7 +24,6 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, rps, task_id,
         if fuzzer_type == "dirsearch":
             fuzzer_container = registry+"/dirsearch:latest"
             fuzzer_start = "python3 -W ignore dirsearch.py"
-            fuzzer_options = cli_args
             parse_func = parseDirsearch
 
         result_id_list = []
