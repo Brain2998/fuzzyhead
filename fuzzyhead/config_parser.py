@@ -8,9 +8,11 @@ global dict_upload
 global dict_remove
 global backend
 global broker
+global flower
 registry=parser.get('URLs', 'registry')
 dict_source=parser.get('URLs', 'dict_source')
 dict_upload=parser.get('URLs', 'dict_upload')
 dict_remove=parser.get('URLs', 'dict_remove')
 backend=parser.get('URLs', 'backend')
 broker=parser.get('URLs', 'broker')
+flower=parser.get('URLs', 'flower')

@@ -3,13 +3,14 @@ from .tasks import fuzzer
 from celery import uuid
 from celery.result import AsyncResult
 from celery.task.control import inspect
+from celery.task.control import revoke
 
 import os
 import requests
 import time
 import json
 
-from .config_parser import registry, dict_upload
+from .config_parser import registry, dict_upload, flower
 
 def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn, cursor):
     try:
@@ -60,13 +61,27 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn
                 break
         l = len(result_id_list)
         a = len(result_id_list)
+        result_ids=json.dumps(result_id_list)
 
+        #Inserting result_ids into database for possible revoke while executing
+        cursor.execute('UPDATE tasks SET result_id=? WHERE id=?', (result_ids, task_id))
+        conn.commit()
+
+        #Waiting for fuzzing to be finished
         while l != 0:
             for result_id in result_id_list:
-                if AsyncResult(result_id,app=fuzzer).ready() == True:
+                if AsyncResult(result_id,app=fuzzer).state == 'REVOKED':
+                    l = l - 1
+                    result_id_list.remove(result_id)
+                    #print (round(100 - l/a * 100), "Task ",result_id, " REVOKED")
+                    continue
+
+                if (AsyncResult(result_id,app=fuzzer).ready() == True) and (AsyncResult(result_id,app=fuzzer).state != 'REVOKED'):
                     output = output+AsyncResult(result_id,app=fuzzer).get()
                     l = l - 1
                     result_id_list.remove(result_id)
+                    #print (round(100 - l/a * 100), "Task ",result_id, " SUCCESS")
+
         if os.path.exists(dict_path):
             os.remove(dict_path)
         output=parse_func(output, round(time.time()-start_time, 2))
@@ -76,7 +91,13 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn
     except:
         cursor.execute('UPDATE tasks SET status=? WHERE id=?', ('Failed', task_id))
         conn.commit()
-    
+
+def abort_fuzzing(result_id_list):
+    for result_id in result_id_list:
+        if AsyncResult(result_id,app=fuzzer).ready() == False:
+            flower_api_revoke_url = flower+'/api/task/revoke/'+str(result_id)
+            requests.post(flower_api_revoke_url,data={'terminate':'true'})
+        #print("Task ", AsyncResult(result_id,app=fuzzer).state, result_id, " is terminated")
 
 def parsePatator(output, fuztime):
     blocks=output.split("b'")
