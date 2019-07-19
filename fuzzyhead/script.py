@@ -12,7 +12,7 @@ import json
 
 from .config_parser import registry, dict_upload, flower
 
-def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn, cursor):
+def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, rps, task_id, conn, cursor):
     try:
         start_time=time.time()
         if fuzzer_type=='patator':
@@ -37,6 +37,14 @@ def start_fuzzing(fuzzer_type, dict_path, divide_number, cli_args, task_id, conn
         partStartIndex=0
         partEndIndex=divide_number if divide_number < dictLength else dictLength
         dictExceed=False
+
+        flower_api_ratelimit_url = flower+'/api/task/rate-limit/fuzzyhead.tasks.fuzzer'
+
+        workers = json.loads(requests.get(flower+'/api/workers').text).keys()
+
+        for worker in workers:
+            params = (('ratelimit', rps),('workername', worker))
+            requests.post(flower_api_ratelimit_url,params)
 
         while True:
             taskid = uuid()

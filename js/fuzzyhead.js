@@ -137,6 +137,7 @@ $(document).ready(function() {
 					$('#dict').text(result.dict);
 					$('#divide_number').text(result.divide_number);
 					$('#cli_args').text(result.cli_args);
+					$('#rps').text(result.rps);
 					var status=result.status;
 					$('#status').text(status);
 					switch (status)
