@@ -1,0 +1,8 @@
+[URLs]
+registry=registry:443
+dict_source=http://backend:5000
+dict_upload=http://backend:5000/uploader
+dict_remove=http://backend:5000/remover
+backend=amqp
+broker=amqp://vicot:pnKKTCd5q42O@10.1.38.14
+flower=http://backend:5555

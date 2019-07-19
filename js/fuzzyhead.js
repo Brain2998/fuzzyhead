@@ -101,8 +101,25 @@ $(document).ready(function() {
 		$('#refresh').click(function(){
 			getTaskDetails();
 		});
+		$('#stop').click(function(){
+			$.ajax({
+				async: true,
+				type: "GET",
+				url: "/abortTask",
+				data: {
+					id: taskId
+				},
+				success: function(data){
+					getTaskDetails();
+				},
+				error: function(err){
+					showResult(`ajax err: ${JSON.stringify(err,null,2)}`);
+				}
+			});
+		});
 
 		function getTaskDetails(){
+			fuzzingResult.empty();
 			$.ajax({
 				async: true,
 				type: "GET",
@@ -130,9 +147,10 @@ $(document).ready(function() {
 						case ('Finished'):
 							statsResult=JSON.parse(result.result);
 						showResult(statsTemplate(statsResult.match, statsResult.hits, statsResult.done, statsResult.skip, 
-			        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));
-							break;
+			        		statsResult.fail, statsResult.size, statsResult.avg, statsResult.time));	
+						case ('Aborted'):
 						case ('Failed'):
+							hideSpinner();
 							break;
 					}
 					

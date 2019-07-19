@@ -5,12 +5,14 @@ import datetime
 import sqlite3
 import json
 
+from ast import literal_eval
+
 app = flask.Flask(__name__)
 conn = sqlite3.connect('task.db', check_same_thread=False)
 cursor = conn.cursor()
 cursor.execute("""CREATE TABLE IF NOT EXISTS tasks (id text PRIMARY KEY, name text NOT NULL,
     started_at text NOT NULL, dict_path text NOT NULL, fuzzer text NOT NULL, target_ip text NOT NULL, 
-    divide_number integer, cli_args text, status text NOT NULL, result text);""")
+    divide_number integer, cli_args text, status text NOT NULL, result text, result_id text);""")
 conn.commit()
 
 def add_cors(response):
@@ -76,6 +78,18 @@ def getTaskDetails():
         'dict': result[0][3], 'fuzzer': result[0][4], 'target_ip': result[0][5], 'divide_number': result[0][6],
         'cli_args': result[0][7], 'status': result[0][8], 'result': result[0][9]})))
     return add_cors(flask.send_from_directory('.', 'details.html'))
+
+@app.route('/abortTask')
+def abortTask():
+    args=flask.request.args
+    if ('id' in args):
+        cursor.execute('SELECT result_id FROM tasks WHERE id=?', (args['id'],))
+        result=cursor.fetchall()
+        script.abort_fuzzing(literal_eval(result[0][0]))
+        cursor.execute('UPDATE tasks SET status=? WHERE id=?', ('Aborted', args['id']))
+        conn.commit()
+        return add_cors(flask.Response(status=200))
+    return flask.abort(400)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050)
