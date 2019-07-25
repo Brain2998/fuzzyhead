@@ -1,6 +1,6 @@
 FROM alpine:3.9
 
-COPY requirements.txt requirements.txt
+COPY ./patator/requirements.txt requirements.txt
 
 RUN apk add --no-cache --update python2 py-pip && \
     apk add --no-cache --virtual .build-dependencies build-base \
